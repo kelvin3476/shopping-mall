@@ -55,6 +55,61 @@
             margin: auto auto 100px;
         }
     </style>
+
+    <Script>
+        function order() {
+            
+            let name = $('#input-q1').val();
+            let amount = $('#input-q2').val();
+            let address = $('#input-q3').val();
+            let phonenumber = $('#input-q4').val()
+
+            if (name == "") {
+                alert("이름을 입력해주세요")
+                $('#input-q1').focus()
+            }
+
+            else if (amount == "-- 수량을 선택하세요 --") {
+                alert("수량을 입력해주세요")
+                $('#input-q2').focus()
+            }
+            
+            else if (address == "") {
+                alert("주소를 입력해주세요")
+                $('#input-q3').focus()
+            }
+
+            else if (phonenumber == "") {
+                alert("전화번호를 입력해주세요")
+                $('#input-q4').focus()
+            }
+            
+            else {
+                $('#order-list').append('<th scope="row">' + name + '</th>')
+                $('#input-q1').val('')
+                        
+                $('#order-list').append('<td>' + amount + '</td>')
+                $('#input-q2').val('-- 수량을 선택하세요 --')
+            
+                $('#order-list').append('<td>' + address + '</td>')
+                $('#input-q3').val('')
+             
+                $('#order-list').append('<td>' + phonenumber + '</td>')
+                $('#input-q4').val('')
+            }
+
+        }
+        function order_delete() {
+            $('#order-list').empty('')
+        }
+    </Script>
+    
+        
+        
+        
+        
+       
+
 </head>
 
 <body>
@@ -85,7 +140,8 @@
             <div class="input-group-prepend">
                 <lmao class="input-group-text" id="inputGroup-sizing-default">주문자 이름</lmao>
             </div>
-            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+            <input id="input-q1" type="text" class="form-control" aria-label="Default"
+                aria-describedby="inputGroup-sizing-default">
         </div>
 
         <!-- 수량 -->
@@ -93,7 +149,7 @@
             <div class="input-group-prepend">
                 <label class="input-group-text" for="inputGroupSelect01">수량</label>
             </div>
-            <select class="custom-select" id="inputGroupSelect01">
+            <select id="input-q2" class="custom-select" id="inputGroupSelect01">
                 <option selected>-- 수량을 선택하세요 --</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -114,7 +170,8 @@
             <div class="input-group-prepend">
                 <lmao class="input-group-text" id="inputGroup-sizing-default">주소</lmao>
             </div>
-            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+            <input id="input-q3" type="text" class="form-control" aria-label="Default"
+                aria-describedby="inputGroup-sizing-default">
         </div>
 
 
@@ -123,13 +180,34 @@
             <div class="input-group-prepend">
                 <lmao class="input-group-text" id="inputGroup-sizing-default">전화번호</lmao>
             </div>
-            <input type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+            <input id="input-q4" type="text" class="form-control" aria-label="Default"
+                aria-describedby="inputGroup-sizing-default">
         </div>
     </div>
 
     <!-- 주문하기 버튼 -->
     <div class="box-center">
-        <a class="btn btn-primary" href="#" role="button">주문하기</a>
+        <lmao>
+        <a onclick="order()" class="btn btn-primary" href="#" role="button">주문하기</a>
+        <a onclick="order_delete()" class="btn btn-warning" href="#" role="button">전체삭제</a>
+    </lmao>
+    </div>
+
+    <!-- 주문한 리스트 -->
+    <div class="box">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">이름</th>
+                    <th scope="col">수량</th>
+                    <th scope="col">주소</th>
+                    <th scope="col">전화번호</th>
+                </tr>
+            </thead>
+            
+            <!-- row data table -->
+            <tbody id="order-list"></tbody>
+        </table>
     </div>
 
 </body>
