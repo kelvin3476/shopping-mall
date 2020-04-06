@@ -56,9 +56,15 @@
         }
     </style>
 
-    <Script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#order-list').html('');
+            listing();
+        });
+
         function order() {
-            
+
             let name = $('#input-q1').val();
             let amount = $('#input-q2').val();
             let address = $('#input-q3').val();
@@ -67,48 +73,104 @@
             if (name == "") {
                 alert("이름을 입력해주세요")
                 $('#input-q1').focus()
+                return;
             }
 
             else if (amount == "-- 수량을 선택하세요 --") {
                 alert("수량을 입력해주세요")
                 $('#input-q2').focus()
+                return;
             }
-            
+
             else if (address == "") {
                 alert("주소를 입력해주세요")
                 $('#input-q3').focus()
+                return;
             }
 
             else if (phonenumber == "") {
                 alert("전화번호를 입력해주세요")
                 $('#input-q4').focus()
+                return;
             }
-            
+
             else {
                 $('#order-list').append('<th scope="row">' + name + '</th>')
                 $('#input-q1').val('')
-                        
+
                 $('#order-list').append('<td>' + amount + '</td>')
                 $('#input-q2').val('-- 수량을 선택하세요 --')
-            
+
                 $('#order-list').append('<td>' + address + '</td>')
                 $('#input-q3').val('')
-             
+
                 $('#order-list').append('<td>' + phonenumber + '</td>')
                 $('#input-q4').val('')
             }
 
+            // 3. POST /orders 에 저장을 요청합니다.
+            $.ajax({
+                type: 'POST', // 타입을 작성합니다.
+                url: '/orders', // url을 작성합니다.
+                data: {'name_give': name,'amount_give': amount,'address_give': address, 'phonenumber_give': phonenumber}, // data를 작성합니다. },
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                        window.location.reload();
+                    }
+                }
+            });
+
         }
-        function order_delete() {
-            $('#order-list').empty('')
+
+        function listing() {
+            // 1. 리뷰 목록을 서버에 요청하기
+            // 2. 요청 성공 여부 확인하기
+            // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+            $.ajax({
+                type: "GET",
+                url: "/orders",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        console.log(response['orders']);
+                        let orders = response['orders']
+                        for (let i = 0; i<orders.length; i++) {
+                            make_card(orders[i]['name'],orders[i]['amount'],orders[i]['address'],orders[i]['phonenumber'])
+                        }
+                        // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
+                    } else {
+                        alert('리뷰를 받아오지 못했습니다');
+                    }
+                }
+            });
         }
+
+        function make_card(name, amount, address, phonenumber) {
+            let temp_html = '<tr>\
+                                <td>'+ name + '</td>\
+                                <td>'+ amount + '</td>\
+                                <td>'+ address + '</td>\
+                                <td>'+ phonenumber + '</td>\
+                            </tr>';
+            $('#order-list').append(temp_html);
+        }
+
+        function is_long(obj) {
+            let content = $(obj).val();
+            if (content.length > 13) {
+                alert('010-0000-0000 형식에 맞게 써주세요.');
+                $(obj).val(content.substring(0, content.length - 1));
+            }
+        }
+        
     </Script>
-    
-        
-        
-        
-        
-       
+
+
+
+
+
+
 
 </head>
 
@@ -204,7 +266,7 @@
                     <th scope="col">전화번호</th>
                 </tr>
             </thead>
-            
+
             <!-- row data table -->
             <tbody id="order-list"></tbody>
         </table>
